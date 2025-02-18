@@ -7,13 +7,31 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <div class="game-status">
-            <h2 id="status-text">Oyun devam ediyor...</h2>
-            <p>Toplanan Resim: <span id="collected-count">0</span>/3</p>
+    <div class="main-container">
+        <div class="game-container">
+            <div class="game-status">
+                <h2 id="status-text">Oyun devam ediyor...</h2>
+                <p>Toplanan Resim: <span id="collected-count">0</span>/3</p>
+            </div>
+            <div class="grid-container">
+                <!-- Grid hücreleri JavaScript ile oluşturulacak -->
+            </div>
         </div>
-        <div class="grid-container">
-            <!-- Grid hücreleri JavaScript ile oluşturulacak -->
+        <div class="control-panel">
+            <div class="movement-buttons">
+                <button id="btn-up">Yukarı</button>
+                <div class="horizontal-buttons">
+                    <button id="btn-left">Sol</button>
+                    <button id="btn-right">Sağ</button>
+                </div>
+                <button id="btn-down">Aşağı</button>
+            </div>
+            <div class="queue-container">
+                <h3>Hareket Kuyruğu</h3>
+                <div id="movement-queue" class="queue-display"></div>
+            </div>
+            <button id="btn-go" class="go-button">BAŞLAT</button>
+            <button id="btn-clear" class="clear-button">TEMİZLE</button>
         </div>
     </div>
     <script src="script.js"></script>
