@@ -62,7 +62,11 @@ const moveSymbols = {
     'up': '↑',
     'down': '↓',
     'left': '←',
-    'right': '→'
+    'right': '→',
+    'upLeft': '↖',
+    'upRight': '↗',
+    'downLeft': '↙',
+    'downRight': '↘'
 };
 
 // Grid oluşturma
@@ -170,6 +174,30 @@ function move(direction) {
         case 'right':
             if (newPosition.x < gameState.gridSize - 1) newPosition.x++;
             break;
+        case 'upLeft':
+            if (newPosition.y > 0 && newPosition.x > 0) {
+                newPosition.y--;
+                newPosition.x--;
+            }
+            break;
+        case 'upRight':
+            if (newPosition.y > 0 && newPosition.x < gameState.gridSize - 1) {
+                newPosition.y--;
+                newPosition.x++;
+            }
+            break;
+        case 'downLeft':
+            if (newPosition.y < gameState.gridSize - 1 && newPosition.x > 0) {
+                newPosition.y++;
+                newPosition.x--;
+            }
+            break;
+        case 'downRight':
+            if (newPosition.y < gameState.gridSize - 1 && newPosition.x < gameState.gridSize - 1) {
+                newPosition.y++;
+                newPosition.x++;
+            }
+            break;
     }
 
     if (newPosition.x !== gameState.playerPosition.x || newPosition.y !== gameState.playerPosition.y) {
@@ -190,7 +218,6 @@ function move(direction) {
             gameState.trashCount++;
             gameState.trashItems.splice(trashIndex, 1);
             
-            // Son çöp toplandığında kontrol et
             if (gameState.trashItems.length === 0) {
                 checkWin();
             }
@@ -206,21 +233,6 @@ function move(direction) {
 // Oyunu kazanma kontrolü
 function checkWin() {
     if (gameState.trashItems.length === 0) {
-        // Tüm hareketlerin tamamlanmasını bekle
-        setTimeout(() => {
-            const message = currentLevel === maxLevel ? 
-                'Tebrikler! Tüm seviyeleri tamamladınız! 🎉' :
-                `Tebrikler! ${currentLevel}. seviyeyi tamamladınız! Bir sonraki seviyeye geçiliyor...`;
-            
-            alert(message);
-            
-            if (currentLevel < maxLevel) {
-                currentLevel++;
-                loadLevel(currentLevel);
-            } else {
-                resetGame();
-            }
-        }, 500);
         return true;
     }
     return false;
@@ -266,6 +278,8 @@ async function playRecordedMoves() {
     gameState = JSON.parse(JSON.stringify(initialGameState));
     createGrid();
     
+    let allTrashCollected = false;
+    
     for (const direction of moveHistory) {
         await new Promise(resolve => setTimeout(resolve, 500));
         if (!move(direction)) {
@@ -273,12 +287,30 @@ async function playRecordedMoves() {
             handleLevelFailure();
             return;
         }
+        // Her hareket sonrası kazanma durumunu kontrol et
+        if (checkWin()) {
+            allTrashCollected = true;
+        }
     }
     
-    // Tüm hareketler tamamlandı ama çöpler toplanmadıysa
-    if (gameState.trashItems.length > 0) {
+    // Tüm hareketler tamamlandıktan sonra başarı kontrolü
+    if (allTrashCollected) {
+        setTimeout(() => {
+            const message = currentLevel === maxLevel ? 
+                'Tebrikler! Tüm seviyeleri tamamladınız! 🎉' :
+                `Tebrikler! ${currentLevel}. seviyeyi tamamladınız! Bir sonraki seviyeye geçiliyor...`;
+            
+            alert(message);
+            
+            if (currentLevel < maxLevel) {
+                currentLevel++;
+                loadLevel(currentLevel);
+            } else {
+                resetGame();
+            }
+        }, 500);
+    } else {
         handleLevelFailure();
-        return;
     }
     
     isPlaying = false;

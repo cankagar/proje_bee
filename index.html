@@ -14,12 +14,20 @@
             <div class="planning-controls">
                 <h3>Hareket Ekle</h3>
                 <div class="controls">
-                    <button onclick="addMove('up')" class="plan-btn">↑</button>
+                    <div class="diagonal-controls">
+                        <button onclick="addMove('upLeft')" class="plan-btn">↖</button>
+                        <button onclick="addMove('up')" class="plan-btn">↑</button>
+                        <button onclick="addMove('upRight')" class="plan-btn">↗</button>
+                    </div>
                     <div class="horizontal-controls">
                         <button onclick="addMove('left')" class="plan-btn">←</button>
                         <button onclick="addMove('right')" class="plan-btn">→</button>
                     </div>
-                    <button onclick="addMove('down')" class="plan-btn">↓</button>
+                    <div class="diagonal-controls">
+                        <button onclick="addMove('downLeft')" class="plan-btn">↙</button>
+                        <button onclick="addMove('down')" class="plan-btn">↓</button>
+                        <button onclick="addMove('downRight')" class="plan-btn">↘</button>
+                    </div>
                 </div>
                 <button onclick="undoLastMove()" class="undo-btn">Son Hareketi Sil</button>
             </div>

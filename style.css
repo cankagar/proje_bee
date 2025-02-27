@@ -154,17 +154,23 @@ h1 {
     background-color: #ef9a9a;
 }
 
+.horizontal-controls, .diagonal-controls {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.diagonal-controls {
+    width: 100%;
+}
+
 .controls {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 8px;
     margin-bottom: 1rem;
-}
-
-.horizontal-controls {
-    display: flex;
-    gap: 8px;
+    width: 100%;
 }
 
 button {
@@ -365,6 +371,11 @@ button:hover {
         width: 45px;
         height: 45px;
         font-size: 1.2rem;
+        padding: 0;
+    }
+
+    .horizontal-controls, .diagonal-controls {
+        gap: 4px;
     }
 
     button {
@@ -388,6 +399,7 @@ button:hover {
     .plan-btn {
         width: 40px;
         height: 40px;
+        font-size: 1rem;
     }
 
     .game-container {
