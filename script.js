@@ -259,6 +259,9 @@ async function playRecordedMoves() {
     if (isPlaying || moveHistory.length === 0) return;
     
     isPlaying = true;
+    // Hareket butonlarını devre dışı bırak
+    disableMovementControls(true);
+    
     // Oyunu başlangıç durumuna getir
     gameState = JSON.parse(JSON.stringify(initialGameState));
     createGrid();
@@ -266,11 +269,53 @@ async function playRecordedMoves() {
     for (const direction of moveHistory) {
         await new Promise(resolve => setTimeout(resolve, 500));
         if (!move(direction)) {
-            break;
+            // Hareket başarısız olursa veya pil bittiyse
+            handleLevelFailure();
+            return;
         }
     }
     
+    // Tüm hareketler tamamlandı ama çöpler toplanmadıysa
+    if (gameState.trashItems.length > 0) {
+        handleLevelFailure();
+        return;
+    }
+    
     isPlaying = false;
+    disableMovementControls(false);
+}
+
+// Hareket kontrollerini etkinleştir/devre dışı bırak
+function disableMovementControls(disable) {
+    const planButtons = document.querySelectorAll('.plan-btn');
+    const undoButton = document.querySelector('.undo-btn');
+    
+    planButtons.forEach(button => {
+        button.disabled = disable;
+        if (disable) {
+            button.style.opacity = '0.5';
+            button.style.cursor = 'not-allowed';
+        } else {
+            button.style.opacity = '1';
+            button.style.cursor = 'pointer';
+        }
+    });
+    
+    if (undoButton) {
+        undoButton.disabled = disable;
+        undoButton.style.opacity = disable ? '0.5' : '1';
+        undoButton.style.cursor = disable ? 'not-allowed' : 'pointer';
+    }
+}
+
+// Seviye başarısız olduğunda
+function handleLevelFailure() {
+    setTimeout(() => {
+        alert('Seviyeyi tamamlayamadınız! Tekrar deneyin.');
+        isPlaying = false;
+        loadLevel(currentLevel); // Mevcut seviyeyi yeniden başlat
+        disableMovementControls(false);
+    }, 500);
 }
 
 // Sayaçları güncelle
