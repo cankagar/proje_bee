@@ -1,7 +1,7 @@
 // Oyun durumu
 let initialGameState = null;
 let currentLevel = 1;
-let maxLevel = 3;
+let maxLevel = 10;
 
 const levels = {
     1: {
@@ -28,8 +28,97 @@ const levels = {
         ]
     },
     3: {
-        name: "Zor Seviye",
-        description: "Son görev: 4 çöp ve 2 pil var. Ustalaşma zamanı!",
+        name: "Orta Seviye - Başlangıç",
+        description: "Biraz daha zorlaşıyor! 3 çöp ve 1 pil var.",
+        player: { x: 2, y: 2 },
+        batteries: [
+            { x: 0, y: 0 }
+        ],
+        trashItems: [
+            { x: 4, y: 0 },
+            { x: 1, y: 2 },
+            { x: 3, y: 2 }
+        ]
+    },
+    4: {
+        name: "Orta Seviye - Çapraz Hareket",
+        description: "Çapraz hareketleri kullanman gereken bir seviye! 3 çöp ve 2 pil var.",
+        player: { x: 0, y: 0 },
+        batteries: [
+            { x: 4, y: 0 },
+            { x: 0, y: 4 }
+        ],
+        trashItems: [
+            { x: 2, y: 2 },
+            { x: 4, y: 4 },
+            { x: 1, y: 3 }
+        ]
+    },
+    5: {
+        name: "Orta Seviye - Strateji",
+        description: "Pilleri akıllıca kullanmalısın! 4 çöp ve 2 pil var.",
+        player: { x: 2, y: 0 },
+        batteries: [
+            { x: 0, y: 2 },
+            { x: 4, y: 2 }
+        ],
+        trashItems: [
+            { x: 1, y: 1 },
+            { x: 3, y: 1 },
+            { x: 1, y: 3 },
+            { x: 3, y: 3 }
+        ]
+    },
+    6: {
+        name: "Zor Seviye - Planlama",
+        description: "İyi bir planlama yapmalısın! 4 çöp ve 2 pil var, ama konumları zorlu.",
+        player: { x: 0, y: 0 },
+        batteries: [
+            { x: 4, y: 0 },
+            { x: 0, y: 4 }
+        ],
+        trashItems: [
+            { x: 2, y: 1 },
+            { x: 1, y: 2 },
+            { x: 3, y: 2 },
+            { x: 2, y: 3 }
+        ]
+    },
+    7: {
+        name: "Zor Seviye - Labirent",
+        description: "Bu seviyede çöpler labirent gibi dizilmiş! 5 çöp ve 2 pil var.",
+        player: { x: 2, y: 0 },
+        batteries: [
+            { x: 0, y: 2 },
+            { x: 4, y: 2 }
+        ],
+        trashItems: [
+            { x: 1, y: 1 },
+            { x: 3, y: 1 },
+            { x: 2, y: 2 },
+            { x: 1, y: 3 },
+            { x: 3, y: 3 }
+        ]
+    },
+    8: {
+        name: "Uzman Seviye - Verimlilik",
+        description: "Her hareketi dikkatli planla! 5 çöp ve 2 pil, minimum hareketle toplamalısın.",
+        player: { x: 0, y: 0 },
+        batteries: [
+            { x: 2, y: 2 },
+            { x: 4, y: 4 }
+        ],
+        trashItems: [
+            { x: 1, y: 1 },
+            { x: 3, y: 1 },
+            { x: 4, y: 2 },
+            { x: 1, y: 3 },
+            { x: 2, y: 4 }
+        ]
+    },
+    9: {
+        name: "Uzman Seviye - Maksimum Zorluk",
+        description: "En zor seviyelerden biri! 6 çöp ve 2 pil var.",
         player: { x: 2, y: 2 },
         batteries: [
             { x: 0, y: 0 },
@@ -38,8 +127,27 @@ const levels = {
         trashItems: [
             { x: 0, y: 4 },
             { x: 4, y: 0 },
-            { x: 1, y: 2 },
-            { x: 3, y: 2 }
+            { x: 1, y: 1 },
+            { x: 3, y: 3 },
+            { x: 1, y: 3 },
+            { x: 3, y: 1 }
+        ]
+    },
+    10: {
+        name: "Final Seviye - Ustalaşma",
+        description: "Final seviyesi! 6 çöp ve 2 pil. Tüm öğrendiklerini kullanma zamanı!",
+        player: { x: 0, y: 0 },
+        batteries: [
+            { x: 4, y: 0 },
+            { x: 0, y: 4 }
+        ],
+        trashItems: [
+            { x: 2, y: 0 },
+            { x: 4, y: 2 },
+            { x: 2, y: 2 },
+            { x: 0, y: 2 },
+            { x: 2, y: 4 },
+            { x: 3, y: 3 }
         ]
     }
 };

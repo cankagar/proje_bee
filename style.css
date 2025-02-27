@@ -304,205 +304,225 @@ button:hover {
     box-shadow: 0 0 0 2px #fff, 0 0 0 4px #004d40;
 }
 
-/* Responsive tasarım için medya sorguları */
-@media screen and (max-width: 768px) {
-    body {
-        padding: 1rem;
+/* Ana responsive tasarım */
+@media screen and (max-width: 1200px) {
+    .game-container {
+        max-width: 900px;
+        gap: 1rem;
     }
+}
 
+@media screen and (max-width: 992px) {
     .game-container {
         flex-direction: column;
-        gap: 1rem;
         align-items: center;
-        padding: 0.5rem;
+        max-width: 600px;
     }
 
-    .move-history {
+    .move-history, .story-container {
         width: 100%;
-        max-width: 350px;
+        max-width: 500px;
         height: auto;
-        min-height: 200px;
-        margin-bottom: 1rem;
-    }
-
-    .story-container {
-        width: 100%;
-        max-width: 350px;
-        height: auto;
-        min-height: 200px;
-        order: 3; /* Hikaye kısmını en alta al */
+        min-height: 250px;
     }
 
     .container {
         width: 100%;
-        max-width: 350px;
+        max-width: 500px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    body {
+        padding: 0.5rem;
+    }
+
+    .game-container {
+        padding: 0.5rem;
+        max-width: 100%;
+    }
+
+    .move-history {
+        min-height: 200px;
+        max-width: 400px;
+    }
+
+    .story-container {
+        min-height: 200px;
+        max-width: 400px;
+        order: 3;
+    }
+
+    .container {
+        max-width: 400px;
         padding: 1rem;
-        min-height: auto;
-        gap: 1rem;
     }
 
     .grid {
-        width: 300px;
-        height: 300px;
+        width: calc(100vw - 40px);
+        max-width: 350px;
+        height: calc(100vw - 40px);
+        max-height: 350px;
         margin: 1rem auto;
-        padding: 10px;
     }
 
     .cell {
-        width: 54px;
-        height: 54px;
-        font-size: 1.5rem;
+        width: calc((100% - 20px) / 5);
+        height: calc((100% - 20px) / 5);
+        font-size: calc(16px + 1vw);
     }
 
-    .game-info {
-        flex-direction: row; /* Yatay düzende kal */
-        justify-content: center;
-        gap: 1rem;
-        margin-bottom: 1rem;
-        font-size: 1.1rem;
-    }
-
-    .battery, .trash {
-        padding: 0.5rem;
-        min-width: 120px;
-    }
-
-    h1 {
-        font-size: 1.3rem;
-        margin-bottom: 0.5rem;
-    }
-
-    .level-info {
-        padding: 0.8rem;
-        margin-bottom: 1rem;
-    }
-
-    .level-info h2 {
-        font-size: 1.1rem;
-    }
-
-    .level-info p {
-        font-size: 0.9rem;
-    }
-
-    /* Kontrol butonları için özel düzenleme */
     .controls {
-        gap: 12px;
-        margin-bottom: 1rem;
+        width: 100%;
+        max-width: 350px;
+        margin: 0 auto;
     }
 
     .plan-btn {
-        width: 60px;
-        height: 60px;
-        font-size: 1.5rem;
+        width: calc(16vw);
+        height: calc(16vw);
+        max-width: 60px;
+        max-height: 60px;
+        min-width: 45px;
+        min-height: 45px;
+        font-size: calc(14px + 1vw);
     }
 
-    /* Çapraz butonlar için özel stil */
     .plan-btn[onclick*="upLeft"],
     .plan-btn[onclick*="upRight"],
     .plan-btn[onclick*="downLeft"],
     .plan-btn[onclick*="downRight"] {
-        width: 45px;
-        height: 45px;
-        font-size: 1.2rem;
+        width: calc(12vw);
+        height: calc(12vw);
+        max-width: 45px;
+        max-height: 45px;
+        min-width: 35px;
+        min-height: 35px;
+        font-size: calc(12px + 0.8vw);
     }
 
-    .horizontal-controls, .diagonal-controls {
-        gap: 8px;
+    .game-info {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.8rem;
     }
 
-    .game-buttons {
-        flex-direction: row; /* Butonları yan yana tut */
-        gap: 1rem;
-        margin-top: 1rem;
-    }
-
-    .play-btn, .reset-btn {
-        width: 140px;
-        height: 45px;
-        font-size: 1rem;
-        padding: 0.5rem 1rem;
-    }
-
-    .undo-btn {
-        height: 45px;
-        font-size: 1rem;
-        margin-bottom: 0.5rem;
+    .battery, .trash {
+        flex: 0 1 calc(50% - 1rem);
+        min-width: 120px;
+        font-size: calc(12px + 0.5vw);
     }
 }
 
 @media screen and (max-width: 480px) {
     body {
-        padding: 0.5rem;
+        padding: 0.25rem;
     }
 
     .grid {
-        width: 280px;
-        height: 280px;
-        padding: 8px;
+        width: calc(100vw - 20px);
+        height: calc(100vw - 20px);
+        padding: 5px;
     }
 
     .cell {
-        width: 50px;
-        height: 50px;
-        font-size: 1.3rem;
+        font-size: calc(14px + 1vw);
     }
 
     .plan-btn {
-        width: 55px;
-        height: 55px;
-        font-size: 1.4rem;
+        width: calc(18vw);
+        height: calc(18vw);
+        max-width: 50px;
+        max-height: 50px;
+        min-width: 40px;
+        min-height: 40px;
+        font-size: calc(12px + 1vw);
     }
 
     .plan-btn[onclick*="upLeft"],
     .plan-btn[onclick*="upRight"],
     .plan-btn[onclick*="downLeft"],
     .plan-btn[onclick*="downRight"] {
-        width: 40px;
-        height: 40px;
-        font-size: 1.1rem;
-    }
-
-    .game-info {
-        font-size: 1rem;
-    }
-
-    .battery, .trash {
-        min-width: 100px;
-        padding: 0.4rem;
+        width: calc(14vw);
+        height: calc(14vw);
+        max-width: 40px;
+        max-height: 40px;
+        min-width: 30px;
+        min-height: 30px;
+        font-size: calc(10px + 0.8vw);
     }
 
     .move-history, .story-container, .container {
-        max-width: 320px;
+        max-width: 100%;
     }
 
     .game-buttons {
-        flex-direction: column; /* Küçük ekranlarda alt alta */
-        gap: 0.5rem;
+        flex-direction: column;
+        width: 100%;
     }
 
     .play-btn, .reset-btn {
         width: 100%;
-        max-width: 200px;
+        max-width: 280px;
+        height: 40px;
+        font-size: calc(12px + 0.5vw);
+        margin: 0 auto;
+    }
+
+    h1 {
+        font-size: calc(16px + 1vw);
+    }
+
+    .level-info h2 {
+        font-size: calc(14px + 0.8vw);
+    }
+
+    .level-info p {
+        font-size: calc(12px + 0.5vw);
     }
 }
 
-/* Dokunmatik cihazlar için iyileştirmeler */
+/* Yatay mod için özel düzenleme */
+@media screen and (max-height: 600px) and (orientation: landscape) {
+    .game-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .move-history, .story-container {
+        flex: 1 1 300px;
+        min-height: 150px;
+        max-height: 80vh;
+    }
+
+    .container {
+        flex: 2 1 400px;
+        min-height: auto;
+    }
+
+    .grid {
+        width: calc(80vh - 40px);
+        height: calc(80vh - 40px);
+        max-width: 300px;
+        max-height: 300px;
+    }
+
+    .controls {
+        transform: scale(0.9);
+    }
+}
+
+/* Dokunmatik optimizasyonları */
 @media (hover: none) {
-    .plan-btn {
+    .plan-btn, button {
         touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
     }
 
-    .plan-btn:active {
-        background-color: #00897b;
+    .plan-btn:active, button:active {
         transform: scale(0.95);
-    }
-
-    button {
-        touch-action: manipulation;
-    }
-
-    button:active {
-        transform: scale(0.98);
+        transition: transform 0.1s;
     }
 } 
