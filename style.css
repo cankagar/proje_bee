@@ -11,6 +11,73 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 2rem;
+}
+
+.game-container {
+    display: flex;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.move-history {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    width: 200px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+}
+
+.move-history h2, .move-history h3 {
+    color: #00796b;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+#moves-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+    min-height: 200px;
+}
+
+.move-item {
+    background-color: #e8f5e9;
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.story-container {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    height: 600px;
+    overflow-y: auto;
+}
+
+.story-container h2 {
+    color: #00796b;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.story-container p {
+    margin-bottom: 1rem;
+    line-height: 1.5;
+    text-align: justify;
 }
 
 .container {
@@ -19,6 +86,8 @@ body {
     padding: 2rem;
     border-radius: 15px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
 }
 
 h1 {
@@ -48,6 +117,10 @@ h1 {
     margin-bottom: 1.5rem;
     width: 300px;
     height: 300px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
 }
 
 .cell {
@@ -58,6 +131,10 @@ h1 {
     align-items: center;
     font-size: 1.5rem;
     transition: all 0.3s ease;
+    aspect-ratio: 1;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
 }
 
 .cell.player {
@@ -70,6 +147,11 @@ h1 {
 
 .cell.trash {
     background-color: #ef9a9a;
+}
+
+.cell:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .controls {
@@ -107,4 +189,93 @@ button:hover {
 
 .reset-btn:hover {
     background-color: #546e7a;
+}
+
+.game-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+.play-btn {
+    background-color: #43a047;
+}
+
+.play-btn:hover {
+    background-color: #2e7d32;
+}
+
+.planning-controls {
+    border-top: 2px solid #e0f7fa;
+    padding-top: 1rem;
+}
+
+.planning-controls .controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1rem;
+}
+
+.plan-btn {
+    background-color: #26a69a;
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.undo-btn {
+    background-color: #ef5350;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.undo-btn:hover {
+    background-color: #e53935;
+}
+
+.play-btn, .reset-btn {
+    position: relative;
+    z-index: 2;
+}
+
+.placement-controls {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: #e8f5e9;
+    border-radius: 8px;
+}
+
+.placement-controls h3 {
+    color: #00796b;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.placement-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.placement-btn {
+    background-color: #26a69a;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.placement-btn.active {
+    background-color: #004d40;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #004d40;
 } 

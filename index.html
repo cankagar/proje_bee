@@ -7,24 +7,54 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>X'in Çevre Dostu Macerası</h1>
-        <div class="game-info">
-            <div class="battery">Pil: <span id="battery-count">3</span></div>
-            <div class="trash">Toplanan Çöp: <span id="trash-count">0</span></div>
-        </div>
-        <div class="grid">
-            <!-- Grid JavaScript ile doldurulacak -->
-        </div>
-        <div class="controls">
-            <button onclick="move('up')">↑</button>
-            <div class="horizontal-controls">
-                <button onclick="move('left')">←</button>
-                <button onclick="move('right')">→</button>
+    <div class="game-container">
+        <div class="move-history">
+            <h2>Planlanan Hareketler</h2>
+            <div id="moves-list"></div>
+            <div class="planning-controls">
+                <h3>Hareket Ekle</h3>
+                <div class="controls">
+                    <button onclick="addMove('up')" class="plan-btn">↑</button>
+                    <div class="horizontal-controls">
+                        <button onclick="addMove('left')" class="plan-btn">←</button>
+                        <button onclick="addMove('right')" class="plan-btn">→</button>
+                    </div>
+                    <button onclick="addMove('down')" class="plan-btn">↓</button>
+                </div>
+                <button onclick="undoLastMove()" class="undo-btn">Son Hareketi Sil</button>
             </div>
-            <button onclick="move('down')">↓</button>
         </div>
-        <button onclick="resetGame()" class="reset-btn">Oyunu Sıfırla</button>
+        
+        <div class="container">
+            <h1>X'in Çevre Dostu Macerası</h1>
+            <div class="game-info">
+                <div class="battery">Pil: <span id="battery-count">3</span></div>
+                <div class="trash">Toplanan Çöp: <span id="trash-count">0</span></div>
+            </div>
+            <div class="placement-controls">
+                <h3>Harita Düzenle</h3>
+                <div class="placement-buttons">
+                    <button onclick="setPlacementMode('player')" class="placement-btn" data-mode="player">🚗 Arabayı Yerleştir</button>
+                    <button onclick="setPlacementMode('battery')" class="placement-btn" data-mode="battery">🔋 Pil Ekle/Kaldır</button>
+                    <button onclick="setPlacementMode('trash')" class="placement-btn" data-mode="trash">🗑️ Çöp Ekle/Kaldır</button>
+                </div>
+            </div>
+            <div class="grid">
+                <!-- Grid JavaScript ile doldurulacak -->
+            </div>
+            <div class="game-buttons">
+                <button onclick="startGame()" class="play-btn">Oyunu Başlat</button>
+                <button onclick="resetGame()" class="reset-btn">Oyunu Sıfırla</button>
+            </div>
+        </div>
+
+        <div class="story-container">
+            <h2>Hikaye</h2>
+            <p>Bir zamanlar, doğayı çok seven X adında bir çocuk vardı. X, yaşadığı dünyayı korumak için her zaman en iyi yolları arıyordu. Ama bir sorun vardı! Havanın içindeki kötü CO2 gazları artmıştı ve dünya biraz üzgündü. 😔</p>
+            <p>X, bu sorunu çözmek için sihirli elektrikli arabasına atladı! 🚗⚡ Ama dikkat etmesi gereken bir şey vardı: Arabanın pili 3 taneydi! Her hareket ettiğinde pili bir tane azalacaktı. Ama neyse ki yol boyunca alabileceği 3 pil bulunuyor ve yoluna devam ediyor! Ayrıca, dünyayı daha temiz yapmak için yerdeki çöpleri de toplaması gerekiyordu. 🌍✨</p>
+            <p>Şimdi X'in macerasına sen de katılmaya hazır mısın? Ona ileri, geri, sağa ve sola gitmesini söyleyerek hem çöpleri toplayabilir hem de pilleri alarak yoluna devam etmesini sağlayabilirsin. Ama dikkatli ol! Pil bitmeden görevi tamamlaman gerekiyor!</p>
+            <p>Hadi, X'e yardım edelim ve dünyayı daha temiz bir yer yapalım! 🌿🚀</p>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
