@@ -160,44 +160,55 @@ function move(direction) {
     }
 
     const newPosition = { ...gameState.playerPosition };
+    let isValidMove = true;
     
     switch (direction) {
         case 'up':
             if (newPosition.y > 0) newPosition.y--;
+            else isValidMove = false;
             break;
         case 'down':
             if (newPosition.y < gameState.gridSize - 1) newPosition.y++;
+            else isValidMove = false;
             break;
         case 'left':
             if (newPosition.x > 0) newPosition.x--;
+            else isValidMove = false;
             break;
         case 'right':
             if (newPosition.x < gameState.gridSize - 1) newPosition.x++;
+            else isValidMove = false;
             break;
         case 'upLeft':
             if (newPosition.y > 0 && newPosition.x > 0) {
                 newPosition.y--;
                 newPosition.x--;
-            }
+            } else isValidMove = false;
             break;
         case 'upRight':
             if (newPosition.y > 0 && newPosition.x < gameState.gridSize - 1) {
                 newPosition.y--;
                 newPosition.x++;
-            }
+            } else isValidMove = false;
             break;
         case 'downLeft':
             if (newPosition.y < gameState.gridSize - 1 && newPosition.x > 0) {
                 newPosition.y++;
                 newPosition.x--;
-            }
+            } else isValidMove = false;
             break;
         case 'downRight':
             if (newPosition.y < gameState.gridSize - 1 && newPosition.x < gameState.gridSize - 1) {
                 newPosition.y++;
                 newPosition.x++;
-            }
+            } else isValidMove = false;
             break;
+    }
+
+    if (!isValidMove) {
+        alert('Alanın dışına çıktınız! Seviyeyi tekrar deneyin.');
+        loadLevel(currentLevel);
+        return false;
     }
 
     if (newPosition.x !== gameState.playerPosition.x || newPosition.y !== gameState.playerPosition.y) {
