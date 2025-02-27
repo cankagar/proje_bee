@@ -1,4 +1,5 @@
 // Oyun durumu
+let playerName = '';
 let initialGameState = null;
 let currentLevel = 1;
 let maxLevel = 10;
@@ -6,7 +7,7 @@ let maxLevel = 10;
 const levels = {
     1: {
         name: "Kolay Seviye - Öğrenme",
-        description: "İlk görevin çok kolay! Sadece 1 çöp ve 1 pil var. Haydi başlayalım!",
+        description: "X'in ilk görevi çok kolay! Sadece 1 çöp ve 1 pil var. Haydi başlayalım!",
         player: { x: 2, y: 2 },  // Oyuncu tam ortada başlasın
         batteries: [
             { x: 1, y: 2 }  // Oyuncuya yakın bir pil
@@ -17,7 +18,7 @@ const levels = {
     },
     2: {
         name: "Kolay Seviye - Alıştırma",
-        description: "Harika gidiyorsun! Şimdi 2 çöp ve 1 pil var. Sen yapabilirsin!",
+        description: "X harika gidiyor! Şimdi 2 çöp ve 1 pil var. X yapabilir!",
         player: { x: 2, y: 2 },  // Yine ortada başlasın
         batteries: [
             { x: 1, y: 1 }  // Köşeye yakın bir pil
@@ -29,7 +30,7 @@ const levels = {
     },
     3: {
         name: "Orta Seviye - Başlangıç",
-        description: "Biraz daha zorlaşıyor! 3 çöp ve 1 pil var.",
+        description: "X için zorluk biraz artıyor! 3 çöp ve 1 pil var.",
         player: { x: 2, y: 2 },
         batteries: [
             { x: 0, y: 0 }
@@ -42,7 +43,7 @@ const levels = {
     },
     4: {
         name: "Orta Seviye - Çapraz Hareket",
-        description: "Çapraz hareketleri kullanman gereken bir seviye! 3 çöp ve 2 pil var.",
+        description: "X'in çapraz hareketleri kullanması gereken bir seviye! 3 çöp ve 2 pil var.",
         player: { x: 0, y: 0 },
         batteries: [
             { x: 4, y: 0 },
@@ -56,7 +57,7 @@ const levels = {
     },
     5: {
         name: "Orta Seviye - Strateji",
-        description: "Pilleri akıllıca kullanmalısın! 4 çöp ve 2 pil var.",
+        description: "X pilleri akıllıca kullanmalı! 4 çöp ve 2 pil var.",
         player: { x: 2, y: 0 },
         batteries: [
             { x: 0, y: 2 },
@@ -71,7 +72,7 @@ const levels = {
     },
     6: {
         name: "Zor Seviye - Planlama",
-        description: "İyi bir planlama yapmalısın! 4 çöp ve 2 pil var, ama konumları zorlu.",
+        description: "X iyi bir planlama yapmalı! 4 çöp ve 2 pil var, ama konumları zorlu.",
         player: { x: 0, y: 0 },
         batteries: [
             { x: 4, y: 0 },
@@ -86,7 +87,7 @@ const levels = {
     },
     7: {
         name: "Zor Seviye - Labirent",
-        description: "Bu seviyede çöpler labirent gibi dizilmiş! 5 çöp ve 2 pil var.",
+        description: "X için çöpler labirent gibi dizilmiş! 5 çöp ve 2 pil var.",
         player: { x: 2, y: 0 },
         batteries: [
             { x: 0, y: 2 },
@@ -102,7 +103,7 @@ const levels = {
     },
     8: {
         name: "Uzman Seviye - Verimlilik",
-        description: "Her hareketi dikkatli planla! 5 çöp ve 2 pil, minimum hareketle toplamalısın.",
+        description: "X her hareketi dikkatli planlamalı! 5 çöp ve 2 pil, minimum hareketle toplanmalı.",
         player: { x: 0, y: 0 },
         batteries: [
             { x: 2, y: 2 },
@@ -118,7 +119,7 @@ const levels = {
     },
     9: {
         name: "Uzman Seviye - Maksimum Zorluk",
-        description: "En zor seviyelerden biri! 6 çöp ve 2 pil var.",
+        description: "X için en zor seviyelerden biri! 6 çöp ve 2 pil var.",
         player: { x: 2, y: 2 },
         batteries: [
             { x: 0, y: 0 },
@@ -135,7 +136,7 @@ const levels = {
     },
     10: {
         name: "Final Seviye - Ustalaşma",
-        description: "Final seviyesi! 6 çöp ve 2 pil. Tüm öğrendiklerini kullanma zamanı!",
+        description: "X için final seviyesi! 6 çöp ve 2 pil. X'in tüm öğrendiklerini kullanma zamanı!",
         player: { x: 0, y: 0 },
         batteries: [
             { x: 4, y: 0 },
@@ -240,11 +241,14 @@ function showLevelInfo(level) {
         existingInfo.remove();
     }
 
+    // Level açıklamasını kişiselleştir
+    const personalizedDescription = level.description.replace(/X/g, playerName);
+
     const levelInfo = document.createElement('div');
     levelInfo.className = 'level-info';
     levelInfo.innerHTML = `
         <h2>Seviye ${currentLevel}: ${level.name}</h2>
-        <p>${level.description}</p>
+        <p>${personalizedDescription}</p>
     `;
 
     container.insertBefore(levelInfo, container.querySelector('.game-info'));
@@ -475,21 +479,84 @@ function updateCounters() {
     document.getElementById('trash-count').textContent = gameState.trashCount;
 }
 
+// Hikaye metnini güncelle
+function updateStory() {
+    const storyContainer = document.querySelector('.story-container');
+    const paragraphs = storyContainer.getElementsByTagName('p');
+    
+    // Her paragrafı güncelle
+    paragraphs[0].textContent = `Bir zamanlar, doğayı çok seven ${playerName} adında bir çocuk vardı. ${playerName}, yaşadığı dünyayı korumak için her zaman en iyi yolları arıyordu. Ama bir sorun vardı! Havanın içindeki kötü CO2 gazları artmıştı ve dünya biraz üzgündü. 😔`;
+    
+    paragraphs[1].textContent = `${playerName}, bu sorunu çözmek için sihirli elektrikli arabasına atladı! 🚗⚡ Ama dikkat etmesi gereken bir şey vardı: Arabanın pili 3 taneydi! Her hareket ettiğinde pili bir tane azalacaktı. Ama neyse ki yol boyunca alabileceği 3 pil bulunuyor ve yoluna devam ediyor! Ayrıca, dünyayı daha temiz yapmak için yerdeki çöpleri de toplaması gerekiyordu. 🌍✨`;
+    
+    paragraphs[2].textContent = `Şimdi ${playerName}'in macerasına sen de katılmaya hazır mısın? Ona ileri, geri, sağa ve sola gitmesini söyleyerek hem çöpleri toplayabilir hem de pilleri alarak yoluna devam etmesini sağlayabilirsin. Ama dikkatli ol! Pil bitmeden görevi tamamlaman gerekiyor!`;
+    
+    paragraphs[3].textContent = `Hadi, ${playerName}'e yardım edelim ve dünyayı daha temiz bir yer yapalım! 🌿🚀`;
+}
+
 // Oyunu sıfırla
 function resetGame() {
     currentLevel = 1;
-    loadLevel(currentLevel);
+    
+    // İsim giriş alanını göster
+    document.getElementById('name-input-container').style.display = 'block';
+    
+    // Oyun arayüzünü gizle
+    document.querySelector('.game-info').style.display = 'none';
+    
+    // İsim giriş alanını temizle
+    document.getElementById('player-name').value = '';
+    
+    // Başlığı sıfırla
+    document.querySelector('h1').textContent = `X'in Çevre Dostu Macerası`;
+    
+    // Oyun durumunu sıfırla
+    playerName = '';
+    moveHistory = [];
+    document.getElementById('moves-list').innerHTML = '';
+    
+    // Grid'i temizle
+    const grid = document.querySelector('.grid');
+    grid.innerHTML = '';
 }
 
-// Oyunu başlat
-function startGame() {
-    if (moveHistory.length === 0) {
-        alert('Önce hareketleri planlamalısınız!');
+// İsimle oyunu başlat
+function startWithName() {
+    const nameInput = document.getElementById('player-name');
+    const name = nameInput.value.trim();
+    
+    if (name === '') {
+        alert('Lütfen isminizi giriniz!');
+        return;
+    }
+
+    // İsim uzunluğu kontrolü
+    if (name.length < 3) {
+        alert('İsminiz çok kısa! Lütfen en az 3 karakter kullanın.');
+        return;
+    }
+
+    if (name.length > 15) {
+        alert('İsminiz çok uzun! Lütfen isminizi kısaltıp tekrar deneyiniz.');
         return;
     }
     
-    initialGameState = JSON.parse(JSON.stringify(gameState));
-    playRecordedMoves();
+    playerName = name;
+    
+    // Oyun başlığını güncelle
+    document.querySelector('h1').textContent = `${playerName}'in Çevre Dostu Macerası`;
+    
+    // Hikayeyi güncelle
+    updateStory();
+    
+    // İsim giriş alanını gizle
+    document.getElementById('name-input-container').style.display = 'none';
+    
+    // Oyun arayüzünü göster
+    document.querySelector('.game-info').style.display = 'block';
+    
+    // Oyunu başlat
+    loadLevel(currentLevel);
 }
 
 // CSS için stil
@@ -509,6 +576,33 @@ style.textContent = `
 
 .level-info p {
     color: #2e7d32;
+}
+
+#name-input-container {
+    margin: 20px 0;
+    text-align: center;
+}
+
+#player-name {
+    padding: 8px;
+    font-size: 16px;
+    border: 2px solid #00796b;
+    border-radius: 4px;
+    margin: 0 10px;
+}
+
+.name-submit-btn {
+    padding: 8px 20px;
+    font-size: 16px;
+    background-color: #00796b;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.name-submit-btn:hover {
+    background-color: #005b4f;
 }
 `;
 document.head.appendChild(style);
