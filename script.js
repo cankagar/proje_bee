@@ -1,347 +1,173 @@
-// Grid boyutları
-const GRID_COLS = 6;
-const GRID_ROWS = 4;
-
 // Oyun durumu
-let playerPosition = {
-    row: GRID_ROWS - 1,  // En alt satır
-    col: 0               // En sol sütun
+let gameState = {
+    playerPosition: { x: 0, y: 0 },
+    batteryCount: 3,
+    trashCount: 0,
+    batteries: [],
+    trashItems: [],
+    gridSize: 5
 };
-
-let collectedItems = 0;
-let gameEnded = false;
-
-// Hedef noktaları
-let targetPositions = [];
-let finishPosition = null;
-
-// Hareket kuyruğu için dizi
-let movementQueue = [];
-let isExecuting = false;
-
-// Kontrol butonlarını seçme
-const btnUp = document.getElementById('btn-up');
-const btnDown = document.getElementById('btn-down');
-const btnLeft = document.getElementById('btn-left');
-const btnRight = document.getElementById('btn-right');
-const btnGo = document.getElementById('btn-go');
-const btnClear = document.getElementById('btn-clear');
-const queueDisplay = document.getElementById('movement-queue');
-
-// Oyunu sıfırla
-function resetGame() {
-    playerPosition = {
-        row: GRID_ROWS - 1,
-        col: 0
-    };
-    collectedItems = 0;
-    gameEnded = false;
-    movementQueue = [];
-    isExecuting = false;
-    document.getElementById('collected-count').textContent = '0';
-    document.getElementById('status-text').textContent = 'Oyun devam ediyor...';
-    document.getElementById('status-text').style.color = '#333';
-    
-    // Kontrolleri aktif et
-    enableControls();
-    
-    // Yeni oyun tahtası oluştur
-    generateRandomPositions();
-    updateBoard();
-    updateQueueDisplay();
-}
-
-// Kontrolleri aktif et
-function enableControls() {
-    btnUp.disabled = false;
-    btnDown.disabled = false;
-    btnLeft.disabled = false;
-    btnRight.disabled = false;
-    btnGo.disabled = false;
-    btnClear.disabled = false;
-}
 
 // Grid oluşturma
 function createGrid() {
-    const gridContainer = document.querySelector('.grid-container');
-    gridContainer.innerHTML = ''; // Grid'i temizle
+    const grid = document.querySelector('.grid');
+    grid.innerHTML = '';
     
-    for (let row = 0; row < GRID_ROWS; row++) {
-        for (let col = 0; col < GRID_COLS; col++) {
+    // Rastgele pil ve çöp konumları oluştur
+    generateRandomItems();
+
+    for (let y = 0; y < gameState.gridSize; y++) {
+        for (let x = 0; x < gameState.gridSize; x++) {
             const cell = document.createElement('div');
-            cell.className = 'grid-cell';
-            cell.setAttribute('data-row', row);
-            cell.setAttribute('data-col', col);
-            gridContainer.appendChild(cell);
+            cell.className = 'cell';
+            
+            // Oyuncu pozisyonu
+            if (x === gameState.playerPosition.x && y === gameState.playerPosition.y) {
+                cell.innerHTML = '🚗';
+                cell.classList.add('player');
+            }
+            
+            // Pil pozisyonları
+            if (isBatteryAt(x, y)) {
+                cell.innerHTML = '🔋';
+                cell.classList.add('battery');
+            }
+            
+            // Çöp pozisyonları
+            if (isTrashAt(x, y)) {
+                cell.innerHTML = '🗑️';
+                cell.classList.add('trash');
+            }
+            
+            grid.appendChild(cell);
+        }
+    }
+    updateCounters();
+}
+
+// Rastgele pil ve çöp konumları oluştur
+function generateRandomItems() {
+    gameState.batteries = [];
+    gameState.trashItems = [];
+    
+    // 3 pil ekle
+    while (gameState.batteries.length < 3) {
+        const position = getRandomPosition();
+        if (!isPositionOccupied(position) && !isPlayerAt(position.x, position.y)) {
+            gameState.batteries.push(position);
+        }
+    }
+    
+    // 3 çöp ekle
+    while (gameState.trashItems.length < 3) {
+        const position = getRandomPosition();
+        if (!isPositionOccupied(position) && !isPlayerAt(position.x, position.y)) {
+            gameState.trashItems.push(position);
         }
     }
 }
 
-// Rastgele benzersiz pozisyonlar oluştur
-function generateRandomPositions() {
-    const positions = [];
-    const startPos = `${GRID_ROWS - 1},0`; // Başlangıç pozisyonu
+// Rastgele pozisyon oluştur
+function getRandomPosition() {
+    return {
+        x: Math.floor(Math.random() * gameState.gridSize),
+        y: Math.floor(Math.random() * gameState.gridSize)
+    };
+}
 
-    while (positions.length < 4) {  // 3 hedef + 1 bitiş noktası
-        const row = Math.floor(Math.random() * GRID_ROWS);
-        const col = Math.floor(Math.random() * GRID_COLS);
-        const posStr = `${row},${col}`;
+// Pozisyon kontrolleri
+function isPositionOccupied(pos) {
+    return isBatteryAt(pos.x, pos.y) || isTrashAt(pos.x, pos.y);
+}
+
+function isBatteryAt(x, y) {
+    return gameState.batteries.some(battery => battery.x === x && battery.y === y);
+}
+
+function isTrashAt(x, y) {
+    return gameState.trashItems.some(trash => trash.x === x && trash.y === y);
+}
+
+function isPlayerAt(x, y) {
+    return gameState.playerPosition.x === x && gameState.playerPosition.y === y;
+}
+
+// Hareket fonksiyonu
+function move(direction) {
+    if (gameState.batteryCount <= 0) {
+        alert('Pil bitti! Oyunu kaybettiniz.');
+        resetGame();
+        return;
+    }
+
+    const newPosition = { ...gameState.playerPosition };
+    
+    switch (direction) {
+        case 'up':
+            if (newPosition.y > 0) newPosition.y--;
+            break;
+        case 'down':
+            if (newPosition.y < gameState.gridSize - 1) newPosition.y++;
+            break;
+        case 'left':
+            if (newPosition.x > 0) newPosition.x--;
+            break;
+        case 'right':
+            if (newPosition.x < gameState.gridSize - 1) newPosition.x++;
+            break;
+    }
+
+    // Hareket gerçekleştiyse
+    if (newPosition.x !== gameState.playerPosition.x || newPosition.y !== gameState.playerPosition.y) {
+        gameState.batteryCount--;
         
-        // Pozisyonun başlangıç noktası olmadığından ve tekrar etmediğinden emin ol
-        if (posStr !== startPos && !positions.includes(posStr)) {
-            positions.push(posStr);
+        // Pil toplama
+        const batteryIndex = gameState.batteries.findIndex(
+            battery => battery.x === newPosition.x && battery.y === newPosition.y
+        );
+        if (batteryIndex !== -1) {
+            gameState.batteryCount++;
+            gameState.batteries.splice(batteryIndex, 1);
+        }
+        
+        // Çöp toplama
+        const trashIndex = gameState.trashItems.findIndex(
+            trash => trash.x === newPosition.x && trash.y === newPosition.y
+        );
+        if (trashIndex !== -1) {
+            gameState.trashCount++;
+            gameState.trashItems.splice(trashIndex, 1);
+        }
+        
+        gameState.playerPosition = newPosition;
+        createGrid();
+        
+        // Oyunu kazanma kontrolü
+        if (gameState.trashItems.length === 0) {
+            alert('Tebrikler! Tüm çöpleri topladınız ve oyunu kazandınız!');
+            resetGame();
         }
     }
-    
-    // İlk 3'ü hedef, son 1'i bitiş noktası
-    targetPositions = positions.slice(0, 3).map(pos => {
-        const [row, col] = pos.split(',').map(Number);
-        return { row, col };
-    });
-    
-    const [finishRow, finishCol] = positions[3].split(',').map(Number);
-    finishPosition = { row: finishRow, col: finishCol };
 }
 
-// Oyun tahtasını güncelle
-function updateBoard() {
-    // Tüm hücreleri temizle
-    document.querySelectorAll('.grid-cell').forEach(cell => {
-        cell.innerHTML = '';
-    });
-    
-    // Hedefleri yerleştir
-    targetPositions.forEach((pos, index) => {
-        const cell = document.querySelector(`[data-row="${pos.row}"][data-col="${pos.col}"]`);
-        if (cell) {
-            const img = document.createElement('img');
-            img.src = `https://picsum.photos/50/50?random=${index + 1}`;
-            img.alt = `Hedef ${index + 1}`;
-            cell.appendChild(img);
-        }
-    });
-    
-    // Bitiş noktasını yerleştir
-    const finishCell = document.querySelector(`[data-row="${finishPosition.row}"][data-col="${finishPosition.col}"]`);
-    if (finishCell) {
-        const finishPoint = document.createElement('div');
-        finishPoint.style.width = '90%';
-        finishPoint.style.height = '90%';
-        finishPoint.style.backgroundColor = '#FFD700';
-        finishPoint.style.borderRadius = '5px';
-        finishCell.appendChild(finishPoint);
-    }
-    
-    // Oyuncuyu yerleştir
-    const playerCell = document.querySelector(`[data-row="${playerPosition.row}"][data-col="${playerPosition.col}"]`);
-    if (playerCell) {
-        const player = document.createElement('div');
-        player.className = 'player';
-        playerCell.appendChild(player);
-    }
+// Sayaçları güncelle
+function updateCounters() {
+    document.getElementById('battery-count').textContent = gameState.batteryCount;
+    document.getElementById('trash-count').textContent = gameState.trashCount;
 }
 
-// Oyuncuyu hareket ettir
-function movePlayer(rowDiff, colDiff) {
-    if (gameEnded) return false;
-
-    const newRow = playerPosition.row + rowDiff;
-    const newCol = playerPosition.col + colDiff;
-    
-    // Grid sınırlarını kontrol et
-    if (newRow < 0 || newRow >= GRID_ROWS || newCol < 0 || newCol >= GRID_COLS) {
-        return false;
-    }
-    
-    // Mevcut hücredeki oyuncuyu bul
-    const currentCell = document.querySelector(`[data-row="${playerPosition.row}"][data-col="${playerPosition.col}"]`);
-    const playerElement = currentCell.querySelector('.player');
-    
-    // Yeni hücreyi bul
-    const newCell = document.querySelector(`[data-row="${newRow}"][data-col="${newCol}"]`);
-    
-    if (playerElement) {
-        // Hareket yönünü belirle
-        let direction = '';
-        if (rowDiff < 0) direction = 'move-up';
-        else if (rowDiff > 0) direction = 'move-down';
-        else if (colDiff < 0) direction = 'move-left';
-        else if (colDiff > 0) direction = 'move-right';
-        
-        // Animasyon sınıfını ekle
-        playerElement.className = 'player ' + direction;
-        
-        // Animasyon bittikten sonra yeni hücreye taşı
-        setTimeout(() => {
-            playerElement.className = 'player';
-            newCell.appendChild(playerElement);
-        }, 400);
-    }
-    
-    // Pozisyonu güncelle
-    playerPosition.row = newRow;
-    playerPosition.col = newCol;
-    
-    // Hedef kontrolü
-    checkCollectible();
-    
-    return true;
+// Oyunu sıfırla
+function resetGame() {
+    gameState = {
+        playerPosition: { x: 0, y: 0 },
+        batteryCount: 3,
+        trashCount: 0,
+        batteries: [],
+        trashItems: [],
+        gridSize: 5
+    };
+    createGrid();
 }
-
-// Hareket fonksiyonları
-function addToQueue(direction) {
-    if (isExecuting || gameEnded) return;
-    movementQueue.push(direction);
-    updateQueueDisplay();
-}
-
-function updateQueueDisplay() {
-    queueDisplay.innerHTML = '';
-    movementQueue.forEach((direction, index) => {
-        const queueItem = document.createElement('div');
-        queueItem.className = `queue-item direction-${direction.toLowerCase()}`;
-        queueItem.textContent = direction;
-        queueDisplay.appendChild(queueItem);
-    });
-}
-
-async function executeQueue() {
-    if (isExecuting || movementQueue.length === 0 || gameEnded) return;
-    
-    isExecuting = true;
-    btnGo.disabled = true;
-    
-    for (const direction of movementQueue) {
-        let success = false;
-        switch (direction) {
-            case 'Yukarı':
-                success = movePlayer(-1, 0);
-                break;
-            case 'Aşağı':
-                success = movePlayer(1, 0);
-                break;
-            case 'Sol':
-                success = movePlayer(0, -1);
-                break;
-            case 'Sağ':
-                success = movePlayer(0, 1);
-                break;
-        }
-        if (!success) break;
-        
-        // Her hareket için bekle
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        // Her hareketten sonra oyun durumunu kontrol et
-        checkGameStatus();
-        if (gameEnded) break;
-    }
-    
-    movementQueue = [];
-    updateQueueDisplay();
-    isExecuting = false;
-    btnGo.disabled = false;
-}
-
-function clearQueue() {
-    if (isExecuting || gameEnded) return;
-    movementQueue = [];
-    updateQueueDisplay();
-}
-
-// Hedef toplama kontrolü
-function checkCollectible() {
-    const targetIndex = targetPositions.findIndex(pos => 
-        pos.row === playerPosition.row && pos.col === playerPosition.col
-    );
-    
-    if (targetIndex !== -1) {
-        // Hedef resmi bul ve animasyonlu şekilde kaldır
-        const cell = document.querySelector(`[data-row="${playerPosition.row}"][data-col="${playerPosition.col}"]`);
-        const img = cell.querySelector('img');
-        if (img) {
-            img.classList.add('collected-image');
-            setTimeout(() => img.remove(), 400);
-        }
-
-        targetPositions.splice(targetIndex, 1);
-        collectedItems++;
-        
-        // Toplanan resim sayısını güncelle ve animasyonlu göster
-        const collectedCountElement = document.getElementById('collected-count');
-        collectedCountElement.textContent = collectedItems;
-        collectedCountElement.style.animation = 'pulse 0.5s ease';
-        setTimeout(() => {
-            collectedCountElement.style.animation = '';
-        }, 500);
-    }
-}
-
-// Oyun durumu kontrolü
-function checkGameStatus() {
-    if (gameEnded) return;
-    
-    const statusText = document.getElementById('status-text');
-    
-    // Bitiş noktasına ulaşıldı mı?
-    if (playerPosition.row === finishPosition.row && playerPosition.col === finishPosition.col) {
-        gameEnded = true;
-        if (collectedItems === 3) {
-            statusText.textContent = 'Tebrikler! Görevi başarıyla tamamladınız!';
-            statusText.style.color = 'green';
-            showGameEndMessage('Başarılı! 🎉', 'success');
-        } else {
-            statusText.textContent = 'Görev başarısız! Tüm hedefleri toplamadan bitişe ulaştınız.';
-            statusText.style.color = 'red';
-            showGameEndMessage('Başarısız! Tekrar deneyin. 😕', 'error');
-        }
-        disableControls();
-    }
-}
-
-// Oyun sonu mesajını göster
-function showGameEndMessage(message, type) {
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `game-message ${type}`;
-    messageDiv.innerHTML = `
-        <p>${message}</p>
-        <button onclick="resetGame()" class="reset-button">Tekrar Dene</button>
-    `;
-    
-    // Varsa eski mesajı kaldır
-    const oldMessage = document.querySelector('.game-message');
-    if (oldMessage) {
-        oldMessage.remove();
-    }
-    
-    document.querySelector('.game-container').appendChild(messageDiv);
-    
-    // Mesajı animasyonlu göster
-    setTimeout(() => {
-        messageDiv.style.opacity = '1';
-        messageDiv.style.transform = 'translateY(0)';
-    }, 10);
-}
-
-// Kontrolleri devre dışı bırak
-function disableControls() {
-    btnUp.disabled = true;
-    btnDown.disabled = true;
-    btnLeft.disabled = true;
-    btnRight.disabled = true;
-    btnGo.disabled = true;
-    btnClear.disabled = true;
-}
-
-// Event listeners
-btnUp.addEventListener('click', () => addToQueue('Yukarı'));
-btnDown.addEventListener('click', () => addToQueue('Aşağı'));
-btnLeft.addEventListener('click', () => addToQueue('Sol'));
-btnRight.addEventListener('click', () => addToQueue('Sağ'));
-btnGo.addEventListener('click', executeQueue);
-btnClear.addEventListener('click', clearQueue);
 
 // Oyunu başlat
-createGrid();
-generateRandomPositions();
-updateBoard(); 
+createGrid(); 
