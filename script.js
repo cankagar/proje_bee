@@ -479,50 +479,9 @@ function updateCounters() {
     document.getElementById('trash-count').textContent = gameState.trashCount;
 }
 
-// Hikaye metnini güncelle
-function updateStory() {
-    const storyContainer = document.querySelector('.story-container');
-    const paragraphs = storyContainer.getElementsByTagName('p');
-    
-    // Her paragrafı güncelle
-    paragraphs[0].textContent = `Bir zamanlar, doğayı çok seven ${playerName} adında bir çocuk vardı. ${playerName}, yaşadığı dünyayı korumak için her zaman en iyi yolları arıyordu. Ama bir sorun vardı! Havanın içindeki kötü CO2 gazları artmıştı ve dünya biraz üzgündü. 😔`;
-    
-    paragraphs[1].textContent = `${playerName}, bu sorunu çözmek için sihirli elektrikli arabasına atladı! 🚗⚡ Ama dikkat etmesi gereken bir şey vardı: Arabanın pili 3 taneydi! Her hareket ettiğinde pili bir tane azalacaktı. Ama neyse ki yol boyunca alabileceği 3 pil bulunuyor ve yoluna devam ediyor! Ayrıca, dünyayı daha temiz yapmak için yerdeki çöpleri de toplaması gerekiyordu. 🌍✨`;
-    
-    paragraphs[2].textContent = `Şimdi ${playerName}'in macerasına sen de katılmaya hazır mısın? Ona ileri, geri, sağa ve sola gitmesini söyleyerek hem çöpleri toplayabilir hem de pilleri alarak yoluna devam etmesini sağlayabilirsin. Ama dikkatli ol! Pil bitmeden görevi tamamlaman gerekiyor!`;
-    
-    paragraphs[3].textContent = `Hadi, ${playerName}'e yardım edelim ve dünyayı daha temiz bir yer yapalım! 🌿🚀`;
-}
-
-// Oyunu sıfırla
-function resetGame() {
-    currentLevel = 1;
-    
-    // İsim giriş alanını göster
-    document.getElementById('name-input-container').style.display = 'block';
-    
-    // Oyun arayüzünü gizle
-    document.querySelector('.game-info').style.display = 'none';
-    
-    // İsim giriş alanını temizle
-    document.getElementById('player-name').value = '';
-    
-    // Başlığı sıfırla
-    document.querySelector('h1').textContent = `X'in Çevre Dostu Macerası`;
-    
-    // Oyun durumunu sıfırla
-    playerName = '';
-    moveHistory = [];
-    document.getElementById('moves-list').innerHTML = '';
-    
-    // Grid'i temizle
-    const grid = document.querySelector('.grid');
-    grid.innerHTML = '';
-}
-
-// İsimle oyunu başlat
-function startWithName() {
-    const nameInput = document.getElementById('player-name');
+// İsim girişini kontrol et ve hikayeyi göster
+function submitName() {
+    const nameInput = document.getElementById('initial-player-name');
     const name = nameInput.value.trim();
     
     if (name === '') {
@@ -543,20 +502,78 @@ function startWithName() {
     
     playerName = name;
     
+    // İsim giriş ekranını gizle
+    document.getElementById('name-entry').style.display = 'none';
+    
+    // Hikaye metnini güncelle
+    updateStoryText();
+    
+    // Hikaye ekranını göster
+    document.getElementById('intro-story').style.display = 'flex';
+}
+
+// Hikaye metnini güncelle
+function updateStoryText() {
+    // Başlığı güncelle
+    document.getElementById('story-title').textContent = `${playerName}'in Çevre Dostu Macerası`;
+    
+    // Paragrafları güncelle
+    document.getElementById('story-p1').textContent = 
+        `Bir zamanlar, doğayı çok seven ${playerName} adında bir çocuk vardı. ${playerName}, yaşadığı dünyayı korumak için her zaman en iyi yolları arıyordu. Ama bir sorun vardı! Havanın içindeki kötü CO2 gazları artmıştı ve dünya biraz üzgündü. 😔`;
+    
+    document.getElementById('story-p2').textContent = 
+        `${playerName}, bu sorunu çözmek için sihirli elektrikli arabasına atladı! 🚗⚡ Ama dikkat etmesi gereken bir şey vardı: Arabanın pili 3 taneydi! Her hareket ettiğinde pili bir tane azalacaktı. Ama neyse ki yol boyunca alabileceği 3 pil bulunuyor ve yoluna devam ediyor! Ayrıca, dünyayı daha temiz yapmak için yerdeki çöpleri de toplaması gerekiyordu. 🌍✨`;
+    
+    document.getElementById('story-p3').textContent = 
+        `Şimdi ${playerName}'in macerasına sen de katılmaya hazır mısın? Ona ileri, geri, sağa ve sola gitmesini söyleyerek hem çöpleri toplayabilir hem de pilleri alarak yoluna devam etmesini sağlayabilirsin. Ama dikkatli ol! Pil bitmeden görevi tamamlaman gerekiyor!`;
+    
+    document.getElementById('story-p4').textContent = 
+        `Hadi, ${playerName}'e yardım edelim ve dünyayı daha temiz bir yer yapalım! 🌿🚀`;
+}
+
+// Oyun başlangıç fonksiyonu
+function startGame() {
+    // Hikaye ekranını gizle
+    document.getElementById('intro-story').style.display = 'none';
+    
+    // Oyun container'ını göster
+    document.querySelector('.game-container').style.display = 'flex';
+    
     // Oyun başlığını güncelle
-    document.querySelector('h1').textContent = `${playerName}'in Çevre Dostu Macerası`;
-    
-    // Hikayeyi güncelle
-    updateStory();
-    
-    // İsim giriş alanını gizle
-    document.getElementById('name-input-container').style.display = 'none';
+    document.querySelector('.container h1').textContent = `${playerName}'in Çevre Dostu Macerası`;
     
     // Oyun arayüzünü göster
     document.querySelector('.game-info').style.display = 'block';
     
-    // Oyunu başlat
+    // İlk seviyeyi yükle
     loadLevel(currentLevel);
+}
+
+// Oyunu sıfırla
+function resetGame() {
+    currentLevel = 1;
+    
+    // İsim giriş ekranını göster
+    document.getElementById('name-entry').style.display = 'flex';
+    
+    // Hikaye ve oyun ekranlarını gizle
+    document.getElementById('intro-story').style.display = 'none';
+    document.querySelector('.game-container').style.display = 'none';
+    
+    // İsim giriş alanını temizle
+    document.getElementById('initial-player-name').value = '';
+    
+    // Başlığı sıfırla
+    document.querySelector('h1').textContent = `X'in Çevre Dostu Macerası`;
+    
+    // Oyun durumunu sıfırla
+    playerName = '';
+    moveHistory = [];
+    document.getElementById('moves-list').innerHTML = '';
+    
+    // Grid'i temizle
+    const grid = document.querySelector('.grid');
+    grid.innerHTML = '';
 }
 
 // CSS için stil
