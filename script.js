@@ -4,151 +4,119 @@ let initialGameState = null;
 let currentLevel = 1;
 let maxLevel = 10;
 
+// P - Arabanın konumu
+// B - Pilin konumu
+// T - Çöpün konumu
+
 const levels = {
     1: {
         name: "Kolay Seviye - Öğrenme",
         description: "X'in ilk görevi çok kolay! Sadece 1 çöp ve 1 pil var. Haydi başlayalım!",
-        player: { x: 2, y: 2 },  // Oyuncu tam ortada başlasın
-        batteries: [
-            { x: 1, y: 2 }  // Oyuncuya yakın bir pil
-        ],
-        trashItems: [
-            { x: 3, y: 2 }  // Pilin diğer tarafında bir çöp
+        grid: [
+            "-----",
+            "-----",
+            "-BP-T",
+            "-----",
+            "-----"
         ]
     },
     2: {
         name: "Kolay Seviye - Alıştırma",
         description: "X harika gidiyor! Şimdi 2 çöp ve 1 pil var. X yapabilir!",
-        player: { x: 2, y: 2 },  // Yine ortada başlasın
-        batteries: [
-            { x: 1, y: 1 }  // Köşeye yakın bir pil
-        ],
-        trashItems: [
-            { x: 3, y: 1 },  // Pilin karşısında bir çöp
-            { x: 2, y: 3 }   // Aşağıda bir çöp
+        grid: [
+            "-----",
+            "-B---",
+            "--P--",
+            "--T--",
+            "-----"
         ]
     },
     3: {
         name: "Orta Seviye - Başlangıç",
         description: "X için zorluk biraz artıyor! 3 çöp ve 1 pil var.",
-        player: { x: 2, y: 2 },
-        batteries: [
-            { x: 0, y: 0 }
-        ],
-        trashItems: [
-            { x: 4, y: 0 },
-            { x: 1, y: 2 },
-            { x: 3, y: 2 }
+        grid: [
+            "B---T",
+            "-----",
+            "-T-T-",
+            "-----",
+            "--P--"
         ]
     },
     4: {
         name: "Orta Seviye - Çapraz Hareket",
         description: "X'in çapraz hareketleri kullanması gereken bir seviye! 3 çöp ve 2 pil var.",
-        player: { x: 0, y: 0 },
-        batteries: [
-            { x: 4, y: 0 },
-            { x: 0, y: 4 }
-        ],
-        trashItems: [
-            { x: 2, y: 2 },
-            { x: 4, y: 4 },
-            { x: 1, y: 3 }
+        grid: [
+            "P---B",
+            "-----",
+            "--T--",
+            "-T---",
+            "B---T"
         ]
     },
     5: {
         name: "Orta Seviye - Strateji",
         description: "X pilleri akıllıca kullanmalı! 4 çöp ve 2 pil var.",
-        player: { x: 2, y: 0 },
-        batteries: [
-            { x: 0, y: 2 },
-            { x: 4, y: 2 }
-        ],
-        trashItems: [
-            { x: 1, y: 1 },
-            { x: 3, y: 1 },
-            { x: 1, y: 3 },
-            { x: 3, y: 3 }
+        grid: [
+            "--P--",
+            "-T-T-",
+            "B---B",
+            "-T-T-",
+            "-----"
         ]
     },
     6: {
         name: "Zor Seviye - Planlama",
         description: "X iyi bir planlama yapmalı! 4 çöp ve 2 pil var, ama konumları zorlu.",
-        player: { x: 0, y: 0 },
-        batteries: [
-            { x: 4, y: 0 },
-            { x: 0, y: 4 }
-        ],
-        trashItems: [
-            { x: 2, y: 1 },
-            { x: 1, y: 2 },
-            { x: 3, y: 2 },
-            { x: 2, y: 3 }
+        grid: [
+            "P----",
+            "--T--",
+            "-T-T-",
+            "--T--",
+            "B---B"
         ]
     },
     7: {
         name: "Zor Seviye - Labirent",
         description: "X için çöpler labirent gibi dizilmiş! 5 çöp ve 2 pil var.",
-        player: { x: 2, y: 0 },
-        batteries: [
-            { x: 0, y: 2 },
-            { x: 4, y: 2 }
-        ],
-        trashItems: [
-            { x: 1, y: 1 },
-            { x: 3, y: 1 },
-            { x: 2, y: 2 },
-            { x: 1, y: 3 },
-            { x: 3, y: 3 }
+        grid: [
+            "--P--",
+            "-T-T-",
+            "B-T-B",
+            "-T-T-",
+            "-----"
         ]
     },
     8: {
         name: "Uzman Seviye - Verimlilik",
         description: "X her hareketi dikkatli planlamalı! 5 çöp ve 2 pil, minimum hareketle toplanmalı.",
-        player: { x: 0, y: 0 },
-        batteries: [
-            { x: 2, y: 2 },
-            { x: 4, y: 4 }
-        ],
-        trashItems: [
-            { x: 1, y: 1 },
-            { x: 3, y: 1 },
-            { x: 4, y: 2 },
-            { x: 1, y: 3 },
-            { x: 2, y: 4 }
+        grid: [
+            "P----",
+            "-T-T-",
+            "--B-T",
+            "-T---",
+            "--T-B"
         ]
     },
     9: {
         name: "Uzman Seviye - Maksimum Zorluk",
         description: "X için en zor seviyelerden biri! 6 çöp ve 2 pil var.",
-        player: { x: 2, y: 2 },
-        batteries: [
-            { x: 0, y: 0 },
-            { x: 4, y: 4 }
-        ],
-        trashItems: [
-            { x: 0, y: 4 },
-            { x: 4, y: 0 },
-            { x: 1, y: 1 },
-            { x: 3, y: 3 },
-            { x: 1, y: 3 },
-            { x: 3, y: 1 }
+        grid: [
+            "B---T",
+            "-T-T-",
+            "--P--",
+            "-T-T-",
+            "T---B"
         ]
     },
     10: {
         name: "Final Seviye - Ustalaşma",
         description: "X için final seviyesi! 6 çöp ve 2 pil. X'in tüm öğrendiklerini kullanma zamanı!",
-        player: { x: 0, y: 0 },
-        batteries: [
-            { x: 4, y: 0 },
-            { x: 0, y: 4 }
-        ],
-        trashItems: [
-            { x: 2, y: 0 },
-            { x: 4, y: 2 },
-            { x: 2, y: 2 },
-            { x: 0, y: 2 },
-            { x: 2, y: 4 },
-            { x: 3, y: 3 }
+        grid: [
+            "P-T-B",
+            "--T--",
+            "T-T-T",
+            "--T--",
+            "B-T--"
         ]
     }
 };
@@ -177,6 +145,35 @@ const moveSymbols = {
     'downLeft': '↙',
     'downRight': '↘'
 };
+
+// Grid tabanlı level'ı koordinat bazlı verilere dönüştürme
+function parseLevel(level) {
+    const player = { x: 0, y: 0 };
+    const batteries = [];
+    const trashItems = [];
+    
+    for (let y = 0; y < level.grid.length; y++) {
+        const row = level.grid[y];
+        for (let x = 0; x < row.length; x++) {
+            const cell = row.charAt(x);
+            
+            if (cell === 'P') {
+                player.x = x;
+                player.y = y;
+            } else if (cell === 'B') {
+                batteries.push({ x, y });
+            } else if (cell === 'T') {
+                trashItems.push({ x, y });
+            }
+        }
+    }
+    
+    return {
+        player,
+        batteries,
+        trashItems
+    };
+}
 
 // Grid oluşturma
 function createGrid() {
@@ -217,12 +214,14 @@ function loadLevel(levelNumber) {
     const level = levels[levelNumber];
     if (!level) return;
 
+    const parsedLevel = parseLevel(level);
+    
     gameState = {
-        playerPosition: { ...level.player },
+        playerPosition: { ...parsedLevel.player },
         batteryCount: 3,
         trashCount: 0,
-        batteries: [...level.batteries],
-        trashItems: [...level.trashItems],
+        batteries: [...parsedLevel.batteries],
+        trashItems: [...parsedLevel.trashItems],
         gridSize: 5
     };
 
