@@ -180,26 +180,43 @@ function createGrid() {
     const grid = document.querySelector('.grid');
     grid.innerHTML = '';
     
+    // Mobil kontrolü
+    const isMobile = window.innerWidth <= 768;
+    
+    if (isMobile) {
+        grid.classList.add('mobile');
+    } else {
+        grid.classList.remove('mobile');
+    }
+    
     for (let y = 0; y < gameState.gridSize; y++) {
         for (let x = 0; x < gameState.gridSize; x++) {
             const cell = document.createElement('div');
             cell.className = 'cell';
+            cell.dataset.x = x;
+            cell.dataset.y = y;
             
             // Oyuncu pozisyonu
             if (x === gameState.playerPosition.x && y === gameState.playerPosition.y) {
-                cell.innerHTML = '🚗';
+                if (!isMobile) {
+                    cell.innerHTML = '🚗';
+                }
                 cell.classList.add('player');
             }
             
             // Pil pozisyonları
             if (isBatteryAt(x, y)) {
-                cell.innerHTML = '🔋';
+                if (!isMobile) {
+                    cell.innerHTML = '🔋';
+                }
                 cell.classList.add('battery');
             }
             
             // Çöp pozisyonları
             if (isTrashAt(x, y)) {
-                cell.innerHTML = '🗑️';
+                if (!isMobile) {
+                    cell.innerHTML = '🗑️';
+                }
                 cell.classList.add('trash');
             }
             
@@ -636,6 +653,11 @@ style.textContent = `
 }
 `;
 document.head.appendChild(style);
+
+// Ekran boyutu değişikliğini dinle ve grid'i uygun şekilde güncelle
+window.addEventListener('resize', function() {
+    createGrid();
+});
 
 // Oyunu başlat
 loadLevel(currentLevel); 
