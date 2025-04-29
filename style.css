@@ -350,6 +350,50 @@ button:hover {
         margin-bottom: 1rem;
         height: auto;
         max-height: 300px;
+        background-color: #e0f7fa;
+        border: 2px solid #26a69a;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        padding: 0.8rem;
+        position: relative;
+    }
+    
+    .story-container h2 {
+        color: #00796b;
+        margin: 0 0 10px 0;
+        padding-bottom: 8px;
+        border-bottom: 2px solid #80cbc4;
+        font-size: 18px;
+        font-weight: bold;
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+    }
+    
+    .story-container h2::before {
+        content: "📖";
+        display: inline-block;
+        margin-right: 8px;
+        background-color: #00796b;
+        color: white;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+    
+    .story-container p {
+        color: #00695c;
+        font-size: 14px;
+        margin-bottom: 0.8rem;
+        line-height: 1.5;
+        text-align: left;
+        padding: 0 5px;
     }
 
     .container {
@@ -524,6 +568,24 @@ button:hover {
 
     .story-container {
         max-height: 200px;
+        padding: 0.6rem;
+    }
+    
+    .story-container h2 {
+        font-size: 16px;
+        margin-left: 0;
+    }
+    
+    .story-container h2::before {
+        width: 22px;
+        height: 22px;
+        font-size: 12px;
+        margin-right: 6px;
+    }
+    
+    .story-container p {
+        font-size: 13px;
+        line-height: 1.4;
     }
 
     .move-history, .story-container, .container {
