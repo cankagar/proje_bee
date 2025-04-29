@@ -533,6 +533,20 @@ function updateStoryText() {
 
 // Oyun başlangıç fonksiyonu
 function startGame() {
+    if (moveHistory.length === 0) {
+        alert('Önce hareketleri planlamalısınız!');
+        return;
+    }
+
+    // Başlangıç durumunu kaydet
+    initialGameState = JSON.parse(JSON.stringify(gameState));
+    
+    // Hareketleri oynat
+    playRecordedMoves();
+}
+
+// Hikayeden oyuna geç
+function startFromStory() {
     // Hikaye ekranını gizle
     document.getElementById('intro-story').style.display = 'none';
     
